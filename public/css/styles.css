@@ -1,0 +1,21 @@
+#text {
+  border: solid;
+  height: 300px;
+  width: 500px;
+  padding: 10px;
+  background-color: rgb(53, 183, 139);
+}
+
+#chat {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#msj {
+  text-align: right;
+}
+
+#responseMsj {
+  text-align: left;
+}

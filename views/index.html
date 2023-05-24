@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<button id="button" type="button">Enviar</button>
+<textarea name="" id="input" cols="30" rows="10"></textarea>
+
+<body>
+  <script>
+
+    let ws = new WebSocket("ws://localhost:1945");
+    const button = document.getElementById('button');
+    const input = document.getElementById('input');
+
+    ws.onopen = (event) => {
+      console.log("Conectado");
+    }
+    ws.onmessage = (event) => {
+      input.value += event.data;
+    }
+    button.addEventListener('click', () => {
+      const newMessage = {
+        "value": input.value,
+        "type": 2
+      };
+      console.log(newMessage.value)
+      ws.send(JSON.stringify(newMessage));
+    })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css  ">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="chat">
+    <div>
+      <label for="name">Dime tu nombre:</label>
+      <input type="text" id="txtName" name="name">
+      <button type="button" id="loginBtn">Entrar al chat</button>
+    </div>
+    <div>
+      <div id="text">
+        <div id="msj"></div>
+        <div id="msjResponse"></div>
+      </div>
+
+      <input type="text" id="txtMsj">
+      <button id="sendBtn">Enviar mensaje</button>
+
+    </div>
+  </div>
+</body>
+<script>
+  let ws = new WebSocket("ws://localhost:3000");
+
+  const txtName = document.getElementById('txtName');
+  const txtMsj = document.getElementById('txtMsj')
+  const loginBtn = document.getElementById('loginBtn');
+  const sendBtn = document.getElementById('sendBtn');
+  const msjResponse = document.getElementById('msjResponse');
+  const msj = document.getElementById('msj');
+
+
+
+  ws.onopen = (event) => {
+    console.log("Conectado");
+  }
+  ws.onmessage = (event) => {
+    console.log(event.data);
+    let res = JSON.parse(event.data);
+    msjResponse.innerHTML += `<br>[${res.timeStamp}]${res.user}:${res.value}`;
+
+  }
+
+  loginBtn.addEventListener('click', () => {
+    console.log("login");
+    const newUser = {
+      "value": txtName.value,
+      "type": 1
+    };
+    ws.send(JSON.stringify(newUser));
+    txtName.disabled = true;
+    //console.log(localStorage.getItem('user'));
+  })
+
+  sendBtn.addEventListener('click', () => {
+    const newMessage = {
+      "timeStamp": new Date().toTimeString(),
+      "user": txtName.value,
+      "value": txtMsj.value,
+      "type": 2,
+    };
+    msj.innerHTML += `<br>[${newMessage.timeStamp}]${newMessage.user}:  ${newMessage.value}`;
+    ws.send(JSON.stringify(newMessage));
+  })
+</script>
+
+</html>
