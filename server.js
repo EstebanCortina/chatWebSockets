@@ -19,6 +19,6 @@ const router = require('./routes');
 app.use('/', router);
 
 
-server.listen(() => {
+server.listen('3000', () => {
   console.log(`Running`);
 });
