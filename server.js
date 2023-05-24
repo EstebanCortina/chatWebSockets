@@ -1,4 +1,3 @@
-const { HOST, PORT } = require('./config/config.js');
 const express = require('express');
 const app = express();
 
@@ -20,6 +19,6 @@ const router = require('./routes');
 app.use('/', router);
 
 
-server.listen(PORT, HOST, () => {
-  console.log(`Running on ${HOST}:${PORT}`);
+server.listen(() => {
+  console.log(`Running`);
 });
