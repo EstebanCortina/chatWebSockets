@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prod": "set NODE_ENV=prod&& nodemon server.js",
-    "dev": "set NODE_ENV=dev&& nodemon server.js"
+    "prod": "set NODE_ENV=prod&& node server.js",
+    "dev": "set NODE_ENV=dev&& node server.js"
   },
   "keywords": [],
   "author": "",
