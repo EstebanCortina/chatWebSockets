@@ -8,7 +8,7 @@ class listaUsuarios {
   }
   findUser(param) {
     for (let i = 0; i < this.lista.length; i++) {
-      if (this.lista[i].name === param) {
+      if (this.lista[i].ws === param) {
         return this.lista[i];
       }
     }

@@ -1,3 +1,4 @@
+const { PORT } = require('./config/config.js');
 const express = require('express');
 const app = express();
 
@@ -19,6 +20,6 @@ const router = require('./routes');
 app.use('/', router);
 
 
-server.listen(443, () => {
-  console.log(`Running`);
+server.listen(PORT, () => {
+  console.log(`Running on ${PORT}`);
 });

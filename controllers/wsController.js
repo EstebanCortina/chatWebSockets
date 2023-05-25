@@ -1,18 +1,18 @@
-const connections = [];
 const User = require('../models/user.js');
 const listaUsuarios = require('../models/ListaUsuarios.js');
 const Message = require('../models/message.js');
 const listaMensajes = require('../models/ListaMensajes.js');
+const ListaUsuarios = require('../models/ListaUsuarios.js');
 
-const broadcastMessage = (message, senderConnection) => {
-  connections.forEach((connection) => {
-    if (connection !== senderConnection) {
-      connection.send(JSON.stringify(message));
+
+function sendAll(message, ws) {
+  listaUsuarios.lista.forEach((connection) => {
+
+    if ((connection.ws !== ws)) {
+      connection.ws.send(JSON.stringify(message));
     }
   });
-};
-
-
+}
 
 module.exports = (ws) => {
   console.log("Nueva conexion");
@@ -21,33 +21,23 @@ module.exports = (ws) => {
 
     const data = JSON.parse(message);
     if (data.type === 1) {
-      let newUser = new User(listaUsuarios.lista.length, data.value, ws);
+      let newUser = new User(listaUsuarios.lista.length, data.value, ws, data.type);
       listaUsuarios.addUser(newUser);
-      console.log(newUser);
+      sendAll(newUser, ws);
     } else {
-      console.log(data.timeStamp);
-      let newMessage = new Message(data.timeStamp, data.user, data.value);
+      let newMessage = new Message(data.timeStamp, data.user, data.value, data.type);
       listaMensajes.addMessage(newMessage);
-      console.log(listaMensajes.lista);
-      listaUsuarios.lista.forEach((connection) => {
-
-        if ((connection.ws !== ws)) {
-          connection.ws.send(JSON.stringify(newMessage));
-        }
-      });
+      sendAll(newMessage, ws);
     }
-
-
-
-
   });
   ws.on('close', () => {
-    const index = connections.indexOf(ws);
+    let user = ListaUsuarios.findUser(ws);
+    const index = ListaUsuarios.lista.indexOf(ws);
     if (index !== -1) {
-      connections.splice(index, 1);
+      ListaUsuarios.lista.splice(index, 1);
     }
+    sendAll({ "type": 3, "user": user.name }, ws);
+    console.log("cerrado");
   });
 
-  // Agregar la nueva conexión al array
-  connections.push(ws);
 };

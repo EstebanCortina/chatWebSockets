@@ -1,9 +1,23 @@
-#text {
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+#txtZone {
   border: solid;
   height: 300px;
+  overflow-y: scroll;
   width: 500px;
   padding: 10px;
   background-color: rgb(53, 183, 139);
+}
+
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Ajusta la altura del contenedor según tus necesidades */
 }
 
 #chat {
@@ -12,10 +26,24 @@
   flex-direction: column;
 }
 
-#msj {
-  text-align: right;
+#txtMsj {
+  width: 75%;
 }
 
-#responseMsj {
+.msj {
+  text-align: right;
+  margin: 10px;
+}
+
+.responseMsj {
   text-align: left;
+  margin: 10px;
+}
+
+.in {
+  background-color: green;
+}
+
+.out {
+  background-color: red;
 }
