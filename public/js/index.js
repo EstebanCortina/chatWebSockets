@@ -1,4 +1,4 @@
-let ws = new WebSocket("ws://localhost:3000");
+let ws = new WebSocket("wss://chatdelamor.onrender.com");
 
 const txtName = document.getElementById('txtName');
 const txtMsj = document.getElementById('txtMsj')
