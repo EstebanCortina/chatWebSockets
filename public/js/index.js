@@ -1,4 +1,7 @@
-let ws = new WebSocket("wss://chatdelamor.onrender.com");
+//let ws = new WebSocket("wss://chatdelamor.onrender.com");
+
+//const ws=new WebSocket("ws://localhost:3000");
+let ws;
 
 const txtName = document.getElementById('txtName');
 const txtMsj = document.getElementById('txtMsj')
@@ -12,37 +15,72 @@ const txtContador = document.getElementById('contador');
 let contador = 0;
 let frase = "te amo";
 
-ws.onopen = (event) => {
-  console.log("Conectado");
-}
-ws.onmessage = (event) => {
-  let res = JSON.parse(event.data);
-  if (res.type === 1) {
-    txtZone.innerHTML += `<br><p class="responseMsj in">${res.name} ha entrado al chat</p>`;
-  } else if (res.type === 2) {
-    txtZone.innerHTML += `<p class="responseMsj">[${res.timeStamp}]${res.user}:${res.payload}</p>`;
-    if (res.payload.toLowerCase().includes(frase)) {
-      contador++;
-      txtContador.innerHTML = `contador: ${contador}`;
+
+
+const createWs = () => {
+  return new Promise((resolve, reject) => {
+    ws = new WebSocket("ws://localhost:3000");
+    ws.onopen = (event) => {
+      console.log("Conectado");
     }
-  } else {
-
-    txtZone.innerHTML += `<br><p class="responseMsj out">${res.user} ha salido al chat</p>`;
-  }
-
-  txtZone.scrollTop = txtZone.clientHeight;
+    ws.onmessage = (event) => {
+      let res = JSON.parse(event.data);
+      if (res.type === 1) {
+        txtZone.innerHTML += `<br><p class="responseMsj in">${res.name} ha entrado al chat</p>`;
+      } else if (res.type === 2) {
+        txtZone.innerHTML += `<p class="responseMsj">[${res.timeStamp}]${res.user}:${res.payload}</p>`;
+        if (res.payload.toLowerCase().includes(frase)) {
+          contador++;
+          txtContador.innerHTML = `contador: ${contador}`;
+        }
+      } else {
+        txtZone.innerHTML += `<br><p class="responseMsj out">${res.user} ha salido al chat</p>`;
+      }
+      txtZone.scrollTop = txtZone.clientHeight;
+    }
+    resolve();
+  });
 }
 
-loginBtn.addEventListener('click', () => {
+const wsSend = (newUser) => {
+  return new Promise((resolve, reject) => {
+    ws.send(JSON.stringify(newUser));
+    resolve();
+  })
+}
+
+
+loginBtn.addEventListener('click', async () => {
   console.log("login");
+
   const newUser = {
     "value": txtName.value,
     "type": 1
   };
-  ws.send(JSON.stringify(newUser));
-  txtName.disabled = true;
+  try {
+    if (!ws) {
+      console.log("vacio");
+      await createWs();
+      txtName.disabled = true;
+    }
+    await wsSend(newUser);
+
+  } catch (error) {
+
+  }
+
+
   //console.log(localStorage.getItem('user'));
 })
+
+logoutBtn.addEventListener('click', () => {
+  if (ws) {
+    ws.close();
+    ws = null;
+    console.log("Session cerrada");
+  }
+})
+
 
 sendBtn.addEventListener('click', () => {
   const newMessage = {
