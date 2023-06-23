@@ -1,5 +1,3 @@
-let ws = new WebSocket("wss://chatdelamor.onrender.com");
-
 //const ws=new WebSocket("ws://localhost:3000");
 let ws;
 
