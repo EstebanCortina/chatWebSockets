@@ -1,18 +1,23 @@
 class listaUsuarios {
   constructor() {
     this.lista = [];
+    this.listaNames = [];
   }
   addUser(newUser) {
     this.lista.push(newUser);
     return true;
   }
-  findUser(param) {
-    for (let i = 0; i < this.lista.length; i++) {
-      if (this.lista[i].ws === param) {
-        return this.lista[i];
+  findUser(index) {
+    return this.lista[index];
+  }
+
+  findListaNames(id) {
+    for (let i = 0; i < array.length; i++) {
+      if (this.lista[i].id == id) {
+        retu
       }
+
     }
-    return false;
   }
 
   broadcastExcept(id) {

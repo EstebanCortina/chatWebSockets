@@ -47,3 +47,11 @@ body {
 .out {
   background-color: red;
 }
+
+.privateUserId:hover {
+  cursor: pointer;
+}
+
+#privateChat {
+  display: none;
+}

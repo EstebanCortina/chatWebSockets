@@ -8,4 +8,7 @@ router.get('/', (req, res) => {
 const chatRouter = require('./chat.js');
 router.use('/chat', chatRouter);
 
+const dmRouter = require('./dm');
+router.use('/dm', dmRouter);
+
 module.exports = router;

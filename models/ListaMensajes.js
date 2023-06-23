@@ -6,6 +6,7 @@ class ListaMensajes {
     this.lista.push(newMessage);
     return true;
   }
+
 }
 
 module.exports = new ListaMensajes();
