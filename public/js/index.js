@@ -1,5 +1,7 @@
-//let ws = new WebSocket("wss://chatdelamor.onrender.com");
-let ws = new WebSocket("ws://localhost:3000");
+let ws = new WebSocket("wss://chatdelamor.onrender.com");
+
+//const ws=new WebSocket("ws://localhost:3000");
+let ws;
 
 const txtName = document.getElementById('txtName');
 const txtMsj = document.getElementById('txtMsj')
@@ -35,67 +37,53 @@ ws.onopen = (event) => {
 }
 ws.onmessage = (event) => {
   let res = JSON.parse(event.data);
-  console.log(res);
   if (res.type === 1) {
-    txtZone.innerHTML += `<br><p class="responseMsj in">${res.newUser} ha entrado al chat</p>`;
-
-    let content = '';
-    res.list.forEach(user => {
-      content += `<div class="privateUserId" id="${user.id}">${user.name}</div>`;
-    })
-    txtUsersList.innerHTML = content;
-    updateDivListeners();
-
+    txtZone.innerHTML += `<br><p class="responseMsj in">${res.name} ha entrado al chat</p>`;
   } else if (res.type === 2) {
     txtZone.innerHTML += `<p class="responseMsj">[${res.timeStamp}]${res.user}:${res.payload}</p>`;
     if (res.payload.toLowerCase().includes(frase)) {
       contador++;
       txtContador.innerHTML = `contador: ${contador}`;
     }
-  } else if (res.type === 3) {
+  } else {
 
     txtZone.innerHTML += `<br><p class="responseMsj out">${res.user} ha salido al chat</p>`;
-  } else if (res.type === 4) {
-    let content = '';
-    res.list.forEach(user => {
-      content += `<div id="${user.id}">${user.name}</div>`;
-    })
-    txtUsersList.innerHTML = content;
-    updateDivListeners();
-  } else if (res.type === 5) {
-    //console.log(res.chat);
-    /*
-    sessionStorage.setItem('userA', JSON.stringify(res.chat.userA));
-    sessionStorage.setItem('userB', JSON.stringify(res.chat.userB));
-
-    txtPrivateChat.disabled = false;
-    txtPrivateChat.innerHTML += sessionStorage.getItem('userB');
-    */
-
-    const url = '/dm';
-    const params = {
-      parametro1: 'valor1'
-    };
-
-    // Construir la URL con los parámetros de consulta
-    const queryParams = new URLSearchParams(params);
-    const urlWithParams = `${url}?${queryParams}`;
-    fetch(urlWithParams);
   }
 
   txtZone.scrollTop = txtZone.clientHeight;
 }
 
-loginBtn.addEventListener('click', () => {
+loginBtn.addEventListener('click', async () => {
   console.log("login");
+
   const newUser = {
     "value": txtName.value,
     "type": 1
   };
-  ws.send(JSON.stringify(newUser));
-  txtName.disabled = true;
+  try {
+    if (!ws) {
+      console.log("vacio");
+      await createWs();
+      txtName.disabled = true;
+    }
+    await wsSend(newUser);
+
+  } catch (error) {
+
+  }
+
+
   //console.log(localStorage.getItem('user'));
 })
+
+logoutBtn.addEventListener('click', () => {
+  if (ws) {
+    ws.close();
+    ws = null;
+    console.log("Session cerrada");
+  }
+})
+
 
 sendBtn.addEventListener('click', () => {
   const newMessage = {
